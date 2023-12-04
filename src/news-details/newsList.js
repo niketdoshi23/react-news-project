@@ -4,6 +4,7 @@ import { Table, Space, Button } from "antd"
 import { useNavigate } from "react-router";
 import NewsDetail from "./newsDetail";
 const NewsList = () => {
+
     /*State declaration */
     const [newsList, setNewsList] = useState([]);
     const [newsDetails, setNewsDetails] = useState(null);
@@ -22,7 +23,7 @@ const NewsList = () => {
         {
             title: "Name",
             dataIndex: "name",
-            key: "name"
+            key: "name",
         },
         {
             title: "Description",
@@ -60,8 +61,8 @@ const NewsList = () => {
         try {
             const response = await API.getHeadlines();
             if (response) {
-                const array1 = response.sources.slice(0, 100);
-                const array2 = response.sources.slice(100);
+                const array1 = response?.sources?.slice(0, 100);
+                const array2 = response?.sources?.slice(100);
                 const finalArray = [...array1, ...array2];
                 setNewsList(finalArray)
             }
@@ -83,10 +84,14 @@ const NewsList = () => {
         setUserInput(e?.target?.value);
     }
 
-    /*function to filter news data*/
+    /*function to filter news data by country code*/
     const handleFilterClick = async () => {
-        const response = await API.getFilteredHeadlines(userInput);
-        setFilteredResult(response?.sources);
+        if(userInput.length>0){
+            const response = await API.getFilteredHeadlines(userInput);
+            setFilteredResult(response?.sources);
+        }else{
+            alert("Please enter something to filter data");
+        }
     }
 
     const handleClearFilter = async () => {
