@@ -2,10 +2,13 @@ import { Modal, Card } from "antd"
 
 const NewsDetail = (props) => {
 
+    /* Ok button click event */
     const handleOkClick = () => {
         props.setOpenNewsModal(false);
         props.setIsViewClicked(false);
     }
+
+    /* Cancel button click event */
     const handleCancelClick = () => {
         props.setOpenNewsModal(false);
         props.setIsViewClicked(false);

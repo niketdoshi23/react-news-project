@@ -4,6 +4,7 @@ import { Table, Space, Button } from "antd"
 import { useNavigate } from "react-router";
 import NewsDetail from "./newsDetail";
 const NewsList = () => {
+    /*State declaration */
     const [newsList, setNewsList] = useState([]);
     const [newsDetails, setNewsDetails] = useState(null);
     const [openNewsModal, setOpenNewsModal] = useState(false);
@@ -11,6 +12,7 @@ const NewsList = () => {
     const [filteredResult, setFilteredResult] = useState([]);
     const [isViewClicked, setIsViewClicked] = useState(false);
     const navigate = useNavigate();
+
     const columns = [
         {
             title: "ID",
@@ -43,19 +45,24 @@ const NewsList = () => {
             key: "action",
             render: (_, record) => (
                 <Space>
-                    <Button onClick={() => handleViewDataClick(record)}>View</Button>
+                    <Button type="primary" onClick={() => handleViewDataClick(record)}>View</Button>
                 </Space>
             )
         },
     ]
-    //function to store data of news
+
+    useEffect(() => {
+        handleNewsList();
+    }, []);
+
+    /*function to store data of news*/
     const handleNewsList = async () => {
         try {
             const response = await API.getHeadlines();
             if (response) {
-                const temp = response.sources.slice(0, 100);
-                const temp2 = response.sources.slice(100);
-                const finalArray = [...temp, ...temp2];
+                const array1 = response.sources.slice(0, 100);
+                const array2 = response.sources.slice(100);
+                const finalArray = [...array1, ...array2];
                 setNewsList(finalArray)
             }
         } catch (error) {
@@ -63,28 +70,24 @@ const NewsList = () => {
         }
 
     }
-    //function ends
 
-    useEffect(() => {
-        handleNewsList();
-    }, []);
-
+    /* View button click event */
     const handleViewDataClick = (record) => {
         setNewsDetails(record);
         setOpenNewsModal(true);
         setIsViewClicked(true);
     }
 
+    /*Track user input of textbox */
     const handleFilterChange = (e) => {
         setUserInput(e?.target?.value);
     }
 
-    //function to filter news data
+    /*function to filter news data*/
     const handleFilterClick = async () => {
         const response = await API.getFilteredHeadlines(userInput);
         setFilteredResult(response?.sources);
     }
-    //function ends
 
     const handleClearFilter = async () => {
         navigate(0);
@@ -93,7 +96,7 @@ const NewsList = () => {
         <>
             <br />
             <div style={{ marginLeft: "10px" }}>
-                <input style={{ borderRadius: "16px", padding: "8px", width: "40%" }} placeholder="filter by country" onChange={handleFilterChange} />
+                <input style={{ borderRadius: "16px", padding: "8px", width: "40%" }} placeholder="Filter by Country" onChange={handleFilterChange} />
                 <Button style={{ marginLeft: "10px" }} onClick={handleFilterClick} type="primary">Filter</Button>
                 <Button style={{ marginLeft: "10px" }} onClick={handleClearFilter}>Clear filter</Button>
 
